@@ -1,0 +1,83 @@
+{% extends 'portal/base.html' %}
+
+{% block title %}Resultat{% endblock %}
+
+{% block content %}
+<div class="feed-container">
+    <div class="page-header-box" style="background: linear-gradient(135deg, var(--blue), #002a5a); color: white; padding: 30px; border-radius: 12px; margin-bottom: 25px; text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">
+        <h1>🎓 Consultation des Résultats</h1>
+        <p>ISES-Likasi : Batisons l'avenir ensemble</p>
+    </div>
+
+    <div class="post-card" style="margin-bottom: 30px; padding: 20px;">
+        <form method="GET" action="{% url 'results' %}" style="display: flex; gap: 10px;">
+            <input type="text" name="q" placeholder="Entrez votre matricule (ex: 22-ISES-001)..." 
+                   value="{{ request.GET.q }}"
+                   style="flex-grow: 1; padding: 12px; border: 2px solid #eee; border-radius: 8px; font-size: 1rem; outline: none;">
+            <button type="submit" class="btn-primary" style="padding: 12px 25px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold;">
+                RECHERCHER
+            </button>
+        </form>
+    </div>
+
+    <div class="results-grid">
+        {% for result in results %}
+        <div class="post-card" style="border-left: 6px solid var(--blue); position: relative;">
+            <div style="position: absolute; top: 15px; right: 15px; background: #e7f3ff; color: var(--blue); padding: 5px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: bold;">
+                {{ result.promotion.department.name }}
+            </div>
+
+            <div class="post-header-meta">
+                <div class="fb-avatar" style="background: #eee; color: var(--blue); border: 1px solid var(--blue);">📄</div>
+                <div class="post-info">
+                    <span class="post-author-name"><strong>{{ result.student_name }}</strong></span>
+                    <span class="post-date">Matricule : {{ result.student_id }}</span>
+                </div>
+            </div>
+
+            <div class="post-content" style="background: #fdfdfd; padding: 15px; border-radius: 8px; margin-top: 10px; border: 1px solid #f0f0f0;">
+                <p style="margin-bottom: 15px;">
+                    📌 Promotion : <strong>{{ result.promotion.name }}</strong><br>
+                    🏛️ Faculté : <strong>{{ result.promotion.department.name }}</strong>
+                </p>
+                
+                {% if result.result_pdf %}
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <span style="color: #666; font-size: 0.85rem;">Fichier : Bulletin_Final.pdf</span>
+                    <a href="{{ result.result_pdf.url }}" class="btn-pdf-download" target="_blank" 
+                       style="background: #28a745; text-decoration: none; padding: 10px 20px; border-radius: 5px; color: white; font-weight: bold; font-size: 0.9rem;">
+                        📥 TÉLÉCHARGER
+                    </a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        {% empty %}
+            {% if request.GET.q %}
+            <div style="text-align: center; padding: 40px;">
+                <p style="font-size: 1.2rem; color: #666;">❌ Aucun résultat trouvé pour le matricule <strong>"{{ request.GET.q }}"</strong>.</p>
+                <p style="color: #888;">Veuillez vérifier l'orthographe ou contacter le secrétariat.</p>
+            </div>
+            {% else %}
+            <div style="text-align: center; padding: 40px; color: #888;">
+                <p>Utilisez la barre de recherche ci-dessus pour consulter votre bulletin.</p>
+            </div>
+            {% endif %}
+        {% endfor %}
+    </div>
+</div>
+
+<style>
+    .results-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(100%, 1fr));
+        gap: 20px;
+    }
+    
+    @media (min-width: 768px) {
+        .results-grid {
+            grid-template-columns: 1fr; /* On garde une colonne pour la lisibilité sur les résultats */
+        }
+    }
+</style>
+{% endblock %}

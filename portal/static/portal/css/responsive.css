@@ -1,0 +1,251 @@
+/* Nouveau : responsive.css
+   Complément à style.css — mobile-first, menu burger, grilles adaptatives,
+   boutons et formulaires responsive, typographie fluide.
+*/
+
+/* BREAKPOINTS (mobile-first) */
+:root {
+    --max-width-sm: 640px;
+    --max-width-md: 960px;
+    --max-width-lg: 1200px;
+
+    --gap-sm: 12px;
+    --gap-md: 20px;
+
+    --container-padding: 5%;
+}
+
+/* === Global helpers === */
+.container {
+    width: 100%;
+    padding: 0 var(--container-padding);
+    margin-left: auto;
+    margin-right: auto;
+    box-sizing: border-box;
+}
+
+/* Typography fluid scaling */
+h1 { font-size: clamp(1.5rem, 4vw, 2.25rem); }
+h2 { font-size: clamp(1.25rem, 3.2vw, 1.75rem); }
+h3 { font-size: clamp(1.05rem, 2.6vw, 1.25rem); }
+
+/* Improve touch targets */
+a, button, .btn-contact {
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: rgba(0,0,0,0.05);
+}
+
+/* Make images fully responsive */
+img, .media-full {
+    max-width: 100%;
+    height: auto;
+    display: block;
+}
+
+/* Cards spacing and responsive width */
+.feed-container { max-width: 900px; margin: 0 auto; padding: 14px; }
+.post-card {
+    padding: 16px;
+    margin-bottom: 18px;
+    border-radius: 12px;
+}
+
+/* Forms / search full width on small */
+.post-card form, .post-card .btn-primary {
+    width: 100%;
+}
+.post-card form input[type="text"] {
+    width: 100%;
+    box-sizing: border-box;
+}
+
+/* Grid improvements */
+.grid-depts {
+    display: grid;
+    gap: var(--gap-md);
+    grid-template-columns: repeat(1, 1fr);
+}
+@media (min-width: 720px) {
+    .grid-depts { grid-template-columns: repeat(2, 1fr); }
+}
+@media (min-width: 1100px) {
+    .grid-depts { grid-template-columns: repeat(3, 1fr); }
+}
+
+/* Footer responsive */
+.footer-grid {
+    display: grid;
+    gap: 18px;
+    grid-template-columns: 1fr;
+    padding: 20px var(--container-padding);
+}
+@media (min-width: 768px) {
+    .footer-grid { grid-template-columns: 1fr 1fr; padding: 30px var(--container-padding); }
+}
+.footer-bottom {
+    text-align: center;
+    font-size: 0.9rem;
+    padding: 12px;
+}
+
+/* NAVBAR / MENU BURGER */
+/* Hide default nav-links on small, show burger. On desktop, show links inline. */
+.nav-toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 46px;
+    height: 46px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    border-radius: 8px;
+    margin-left: 12px;
+}
+.nav-toggle .hamburger {
+    width: 22px;
+    height: 2px;
+    background: white;
+    display: block;
+    position: relative;
+    transition: transform .25s ease;
+}
+.nav-toggle .hamburger::before,
+.nav-toggle .hamburger::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    width: 22px;
+    height: 2px;
+    background: white;
+    transition: transform .25s ease, opacity .25s ease;
+}
+.nav-toggle .hamburger::before { top: -7px; }
+.nav-toggle .hamburger::after { top: 7px; }
+
+/* Mobile: hide links, they will appear in an overlay/drawer */
+.nav-links {
+    display: none;
+}
+
+/* When nav opened (body.nav-open), show a full screen menu overlay for small screens */
+body.nav-open::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.4);
+    z-index: 999;
+}
+
+@media (max-width: 767px) {
+    .navbar {
+        height: auto;
+        position: sticky; /* stick below top-bar */
+        top: 0;
+        padding: 10px 0;
+    }
+    .nav-container {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+        padding: 0 var(--container-padding);
+    }
+
+    /* Drawer panel */
+    .nav-panel {
+        position: fixed;
+        top: 0;
+        right: -100%;
+        width: 78%;
+        max-width: 360px;
+        height: 100%;
+        background: white;
+        box-shadow: -8px 0 30px rgba(0,0,0,0.12);
+        z-index: 1000;
+        padding: 24px;
+        display: flex;
+        flex-direction: column;
+        gap: 18px;
+        transition: right 0.28s ease;
+    }
+
+    /* show panel when nav-open */
+    body.nav-open .nav-panel {
+        right: 0;
+    }
+
+    /* inside the panel, show links vertically */
+    .nav-panel .nav-links {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+    .nav-panel .nav-links a {
+        color: #222;
+        font-weight: 700;
+        font-size: 1.05rem;
+        text-decoration: none;
+        padding: 8px 6px;
+        display: block;
+    }
+
+    /* transform hamburger to X when open */
+    body.nav-open .nav-toggle .hamburger {
+        transform: rotate(45deg);
+    }
+    body.nav-open .nav-toggle .hamburger::before {
+        transform: rotate(90deg) translateX(0);
+        top: 0;
+    }
+    body.nav-open .nav-toggle .hamburger::after { opacity: 0; }
+
+    /* ensure logo and whatsapp button are not cramped */
+    .logo-container { gap: 10px; align-items: center; }
+    .logo-image { width: 48px; height: auto; }
+    .logo { font-size: 1.1rem; }
+}
+
+/* Desktop: show nav-links inline and hide nav-toggle and nav-panel */
+@media (min-width: 768px) {
+    .nav-toggle, .nav-panel { display: none; }
+    .nav-links { display: flex; gap: 16px; align-items: center; list-style: none; padding: 0; margin: 0; }
+}
+
+/* Accessibility focus outlines */
+a:focus, button:focus, .nav-links a:focus {
+    outline: 3px solid rgba(0,123,255,0.18);
+    outline-offset: 2px;
+}
+
+/* Buttons and contact CTA adjustments */
+.whatsApp-btn .btn-contact {
+    display: inline-flex;
+    gap: 8px;
+    align-items: center;
+    padding: 8px 12px;
+    border-radius: 20px;
+    font-weight: 600;
+}
+@media (max-width: 480px) {
+    .whatsApp-btn .btn-contact { padding: 8px 10px; font-size: 0.9rem; }
+}
+
+/* Ensure post images and embedded PDFs don't overflow */
+.pdf-attachment, .media-full {
+    overflow: hidden;
+}
+
+/* Small devices: form elements and buttons full-width */
+@media (max-width: 520px) {
+    .post-card form { flex-direction: column; gap: 10px; }
+    .btn-primary { width: 100%; text-align: center; }
+}
+
+/* Minor utility */
+.text-center { text-align: center; }
+
+/* End of responsive.css */

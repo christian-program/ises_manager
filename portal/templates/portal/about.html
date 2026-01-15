@@ -1,0 +1,36 @@
+{% extends 'portal/base.html' %}
+
+{% block title %}À propos{% endblock %}
+{% block content %}
+<section class="hero">
+    <h1>ISES-LIKASI</h1>
+    <p>Batissons l'avenir ensemble</p>
+</section>
+
+<div class="info-text" style="max-width: 800px; margin: 0 auto 50px; text-align: center;">
+    <h2>Notre Mission</h2>
+    <p>Sous l'Arrêté Ministériel N° 0124/MINESU/CAB.MIN/2023, l'ISTP Likasi forme les futurs cadres de l'industrie minière et technologique de la RDC.</p>
+</div>
+
+<h2 style="text-align: center; margin-bottom: 30px;">Nos Filières d'Excellence</h2>
+
+<div class="grid-depts">
+    {% for dept in departments %}
+    <div class="dept-card" style="background: white; border-radius: 10px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.1); margin-bottom: 20px;">
+        
+        {% if dept.image %}
+            <img src="{{ dept.image.url }}" alt="{{ dept.name }}" style="width: 100%; height: 200px; object-fit: cover;">
+        {% else %}
+            <div style="width: 100%; height: 200px; background: #eee; display: flex; align-items: center; justify-content: center; color: #888;">
+                <i class="fas fa-university fa-3x"></i>
+            </div>
+        {% endif %}
+
+        <div style="padding: 15px;">
+            <h3 style="color: var(--blue); margin-bottom: 10px;">{{ dept.name }}</h3>
+            <p style="color: #666; font-size: 0.9rem;">{{ dept.description }}</p>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

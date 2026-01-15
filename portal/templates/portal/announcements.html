@@ -1,0 +1,61 @@
+{% extends 'portal/base.html' %}
+
+{% block title %}Actualités{% endblock %}
+{% block content %}
+<div class="feed-container">
+    <div class="page-header-box" style="background: var(--red); color: white; padding: 20px; border-radius: 10px; margin-bottom: 25px; text-align: center;">
+        <h1>📢 Communiqués Officiels</h1>
+    </div>
+
+    {% for post in posts %}
+    <div class="post-card" style="border-top: 5px solid var(--red);">
+        <div class="post-header-meta">
+            <div class="fb-avatar" style="background: var(--red);">ISTP</div>
+            <div class="post-info">
+                <span class="post-author-name">Direction Académique</span>
+                <span class="post-date">{{ post.created_at|date:"d F Y" }}</span>
+            </div>
+        </div>
+
+        <div class="post-content">
+            <h2 class="post-title">{{ post.title }}</h2>
+            <p>{{ post.content|linebreaks }}</p>
+        </div>
+
+        <div class="fb-comments-wrapper">
+            <div class="social-interaction-btns">
+                <button type="button" class="interaction-btn" onclick="toggleComments('{{ post.id }}')" style="color: var(--red);">
+                    💬 Voir les réactions <span class="comment-badge" style="background: var(--red);">{{ post.comments.count }}</span>
+                </button>
+            </div>
+
+            <div id="comment-section-{{ post.id }}" class="fb-comments-section" style="display: none;">
+                <div class="fb-comments-list">
+                    {% for comment in post.comments.all %}
+                    <div class="fb-comment-item">
+                        <div class="fb-avatar mini">{{ comment.author.username|slice:":1"|upper }}</div>
+                        <div class="fb-comment-content">
+                            <div class="fb-bubble"><span class="fb-user-name">{{ comment.author.username }}</span><p class="fb-text">{{ comment.text }}</p></div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% if user.is_authenticated %}
+                <form action="{% url 'add_comment' post.id %}" method="POST" class="fb-input-area">
+                    {% csrf_token %}
+                    <div class="fb-input-wrapper"><input type="text" name="text" placeholder="Réagir..." required><button type="submit">➤</button></div>
+                </form>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<script>
+function toggleComments(postId) {
+    var section = document.getElementById('comment-section-' + postId);
+    section.style.display = (section.style.display === "none") ? "block" : "none";
+}
+</script>
+{% endblock %}

@@ -1,0 +1,32 @@
+{% extends 'portal/base.html' %}
+{% block content %}
+<div style="max-width: 900px; margin: auto;">
+    <h1 style="color: var(--blue); margin-bottom: 30px;">Espace de Gestion Enseignant</h1>
+    
+    <div class="grid-depts">
+        <div class="post-card" style="text-align: center;">
+            <h2 style="font-size: 3rem;">📝</h2>
+            <h3>Publier du contenu</h3>
+            <p>Postes, Communiqués ou Horaires</p>
+            <br>
+            <a href="{% url 'create_post' %}" class="btn-primary" style="text-decoration: none; display: block;">Accéder</a>
+        </div>
+
+        <div class="post-card" style="text-align: center;">
+            <h2 style="font-size: 3rem;">📊</h2>
+            <h3>Résultats (Massif)</h3>
+            <p>Importer ZIP + Excel</p>
+            <br>
+            <a href="{% url 'bulk_upload' %}" class="btn-primary" style="text-decoration: none; display: block; background: #28a745;">Accéder</a>
+        </div>
+
+        <div class="post-card" style="text-align: center;">
+            <h2 style="font-size: 3rem;">🛡️</h2>
+            <h3>Administration</h3>
+            <p>Gérer les départements et membres</p>
+            <br>
+            <a href="/admin" class="btn-secondary" style="text-decoration: none; display: block; color: var(--blue); border: 1px solid var(--blue);">Ouvrir Django Admin</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,197 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ISES-LIKASI {% block title %}{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'portal/css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'portal/css/responsive.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <meta name="theme-color" content="#004085">
+ 
+</head>
+<body>
+    <div class="top-bar">
+        <span>📧 infos@ises-likasi.ac.cd</span>
+        <span>📍 Likasi, Haut-Katanga, RDC</span>
+    </div>
+
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo-container">
+                <img src="{% static 'portal/images/logo.jpg' %}" alt="Ises logo" class="logo-image">
+                <h1 class="logo">ISES-<span>LIKASI</span></h1>
+
+                <!-- WhatsApp visible sur grand écran -->
+                <div class="whatsApp-btn whatsApp-btn-header">
+                    <a href="https://wa.me/243990862014" target="_blank" class="btn-contact">
+                        <i class="fab fa-whatsapp"></i> Contactez-nous
+                    </a>
+                </div>
+            </div>
+
+            <!-- Bouton burger (affiché sur petits écrans) -->
+            <button class="nav-toggle" aria-label="Ouvrir le menu" aria-expanded="false">
+                <span class="hamburger"></span>
+            </button>
+
+            <!-- Drawer mobile: contient les liens (sur desktop cette zone est masquée) -->
+            <div class="nav-panel" aria-hidden="true">
+                <!-- Optionnel: bouton fermer visible dans la drawer -->
+                <button class="nav-close" aria-label="Fermer le menu">&times;</button>
+
+
+                <ul class="nav-links">
+                    <li><a href="{% url 'home' %}">Accueil</a></li>
+                    <li><a href="{% url 'announcements' %}">Actualités</a></li>
+                    <li><a href="{% url 'schedules' %}">Horaires</a></li>
+                    <li><a href="{% url 'results' %}">Résultats</a></li>
+                    <li><a href="{% url 'about' %}">À propos</a></li>
+                    {% if user.is_authenticated %}
+                        {% if user.is_staff %}
+                            <li><a href="{% url 'teacher_dashboard' %}" style="color: var(--red);">⚙️ DASHBOARD</a></li>
+                        {% endif %}
+                        
+                        <li>
+                            <form action="{% url 'logout' %}" method="post" style="display: inline;">
+                                {% csrf_token %}
+                                <button type="submit" class="logout-button">Déconnexion ({{ user.username }})</button>
+                            </form>
+                        </li>
+                    {% else %}
+                        <li><a href="{% url 'login' %}">Connexion</a></li>
+                        <li><a href="{% url 'register' %}" style="color: var(--blue);">S'inscrire</a></li>
+                    {% endif %}
+                </ul>
+
+                <!-- WhatsApp pour mobile (large, facile à toucher) -->
+                <div class="whatsApp-btn whatsApp-panel">
+                    <a href="https://wa.me/243990862014" target="_blank" class="btn-contact">
+                        <i class="fab fa-whatsapp"></i> Contactez-nous
+                    </a>
+                </div>
+            </div>
+
+            <!-- Sur desktop on garde les liens visibles en ligne (non dans la drawer) -->
+            <ul class="nav-links nav-links-desktop">
+                <li><a href="{% url 'home' %}">Accueil</a></li>
+                <li><a href="{% url 'announcements' %}">Actualités</a></li>
+                <li><a href="{% url 'schedules' %}">Horaires</a></li>
+                <li><a href="{% url 'results' %}">Résultats</a></li>
+                <li><a href="{% url 'about' %}">À propos</a></li>
+                {% if user.is_authenticated %}
+                    {% if user.is_staff %}
+                        <li><a href="{% url 'teacher_dashboard' %}" style="color: var(--red);">⚙️ DASHBOARD</a></li>
+                    {% endif %}
+                    
+                    <li>
+                        <form action="{% url 'logout' %}" method="post" style="display: inline;">
+                            {% csrf_token %}
+                            <button type="submit" class="logout-button">Déconnexion ({{ user.username }})</button>
+                        </form>
+                    </li>
+                {% else %}
+                    <li><a href="{% url 'login' %}">Connexion</a></li>
+                    <li><a href="{% url 'register' %}" style="color: var(--blue);">S'inscrire</a></li>
+                {% endif %}
+            </ul>
+        </div>
+    </nav>
+
+    <main class="content-wrapper">
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="footer">
+        <div class="footer-grid">
+            <div>
+                <h3>ISES-LIKASI</h3>
+                <h4>Batisons l'avenir ensemble</h4>
+                <p>Arrêté Ministériel : N° 0124/MINESU/CAB.MIN/2023</p>
+                <div>© 2026 ISES-Likasi. All Rights Reserved.</div>
+            </div>
+            <div>
+                <h3>Contact</h3>
+                <p>Avenue de l'Université, Likasi</p>
+
+                <div class="whatsApp-btn whatsApp-btn-footer">
+                    <a href="https://wa.me/243990862014" target="_blank" class="btn-contact">
+                        <i class="fab fa-whatsapp"></i> Contactez-nous  +243 812 345 678
+                    </a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Script pour le menu burger (ouvre/ferme la drawer) -->
+    <script>
+        (function(){
+            const btn = document.querySelector('.nav-toggle');
+            const closeBtn = document.querySelector('.nav-close');
+            const body = document.body;
+            const panel = document.querySelector('.nav-panel');
+
+            function openMenu() {
+                body.classList.add('nav-open');
+                btn.setAttribute('aria-expanded', 'true');
+                panel.setAttribute('aria-hidden', 'false');
+                // focus sur premier lien pour accessibilité
+                const firstLink = panel.querySelector('.nav-links a');
+                if (firstLink) firstLink.focus();
+            }
+
+            function closeMenu() {
+                body.classList.remove('nav-open');
+                btn.setAttribute('aria-expanded', 'false');
+                panel.setAttribute('aria-hidden', 'true');
+                btn.focus();
+            }
+
+            if (btn && panel) {
+                btn.addEventListener('click', function(e){
+                    const opened = body.classList.contains('nav-open');
+                    if (opened) closeMenu(); else openMenu();
+                });
+            }
+
+            if (closeBtn) closeBtn.addEventListener('click', closeMenu);
+
+            // fermer si clic sur overlay (body.nav-open::after visible)
+            document.addEventListener('click', function(e){
+                if (!body.classList.contains('nav-open')) return;
+                // si clic en-dehors du panel et pas sur le toggle -> fermer
+                if (!panel.contains(e.target) && !btn.contains(e.target)) {
+                    closeMenu();
+                }
+            });
+
+            // Fermer avec ESC
+            document.addEventListener('keydown', function(e){
+                if (e.key === 'Escape' && body.classList.contains('nav-open')) closeMenu();
+            });
+
+            // Gestion des liens dans la drawer : forcer la navigation si le navigateur bloque (cas rares)
+            panel.addEventListener('click', function(e){
+                const a = e.target.closest('a');
+                if (!a) return;
+                const href = a.getAttribute('href');
+                // si c'est un ancre locale (commence par '#') ou javascript:void(0) on n'applique pas la redirection forcée
+                if (!href || href.startsWith('#') || href.startsWith('javascript:')) return;
+                // si target="_blank", laisser l'ouverture normale
+                if (a.target === '_blank') {
+                    closeMenu();
+                    return;
+                }
+                // fermer la drawer puis forcer la navigation après un court délai
+                e.preventDefault(); // empêche tout comportement suspect
+                closeMenu();
+                // délai pour laisser l'animation/UX côté client
+                setTimeout(function(){
+                    window.location.href = a.href;
+                }, 160);
+            });
+        })();
+    </script>
+</body>
+</html>

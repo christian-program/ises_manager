@@ -1,0 +1,98 @@
+
+{% extends 'portal/base.html' %}
+{% load static %}
+
+{% block title %}Accueil{% endblock %}
+{% block content %}
+<div class="feed-container">
+    {% for post in posts %}
+    <div class="post-card">
+        <div class="post-header-meta">
+            <div class="fb-avatar">{{ post.author.username|slice:":1"|upper }}</div>
+            <div class="post-info">
+                <span class="post-author-name"><strong>{{ post.author.get_full_name|default:post.author.username }}</strong></span>
+                <span class="post-date">{{ post.created_at|date:"d F Y à H:i" }} • <span class="badge {{ post.post_type }}">{{ post.get_post_type_display }}</span></span>
+            </div>
+        </div>
+
+        <div class="post-content">
+            <h2 class="post-title">{{ post.title }}</h2>
+            <p>{{ post.content|linebreaks }}</p>
+            {% if post.image %}<img src="{{ post.image.url }}" class="media-full">{% endif %}
+            {% if post.video %}<video controls class="media-full"><source src="{{ post.video.url }}"></video>{% endif %}
+            {% if post.document_pdf %}
+                <div class="pdf-attachment">
+                    <p>📄 <strong>{{ post.title }}</strong></p>
+                    <a href="{{ post.document_pdf.url }}" class="btn-pdf-download" target="_blank">Ouvrir</a>
+                </div>
+            {% endif %}
+        </div>
+
+        <div class="fb-comments-wrapper">
+            <div class="fb-comment-count">
+                <span>👍 {{ post.likes.count }} J'aime</span>
+                <span style="font-weight: 600; color: var(--blue);">💬 {{ post.comments.count }} commentaire{{ post.comments.count|pluralize }}</span>
+            </div>
+
+            <hr class="fb-divider">
+
+            <div class="social-interaction-btns">
+                <form action="{% url 'like_post' post.id %}" method="POST" style="display:inline;">
+                    {% csrf_token %}
+                    <button type="submit" class="interaction-btn {% if user in post.likes.all %}active-like{% endif %}">
+                        {% if user in post.likes.all %}
+                            💙 J'aime
+                        {% else %}
+                            👍 J'aime
+                        {% endif %}
+                    </button>
+                </form>
+                
+                <button type="button" class="interaction-btn btn-toggle-comments" onclick="toggleComments('{{ post.id }}')">
+                    💬 Commenter <span class="comment-badge">{{ post.comments.count }}</span>
+                </button>
+            </div>
+
+            <hr class="fb-divider">
+
+            <div id="comment-section-{{ post.id }}" class="fb-comments-section" style="display: none;">
+                <div class="fb-comments-list">
+                    {% for comment in post.comments.all %}
+                    <div class="fb-comment-item">
+                        <div class="fb-avatar mini">{{ comment.author.username|slice:":1"|upper }}</div>
+                        <div class="fb-comment-content">
+                            <div class="fb-bubble">
+                                <span class="fb-user-name">{{ comment.author.username }}</span>
+                                <p class="fb-text">{{ comment.text }}</p>
+                            </div>
+                            <span class="fb-timestamp">{{ comment.created_at|date:"d M à H:i" }}</span>
+                        </div>
+                    </div>
+                    {% empty %}
+                    <p class="fb-no-content">Aucun commentaire.</p>
+                    {% endfor %}
+                </div>
+
+                {% if user.is_authenticated %}
+                <form action="{% url 'add_comment' post.id %}" method="POST" class="fb-input-area">
+                    {% csrf_token %}
+                    <div class="fb-avatar mini">{{ user.username|slice:":1"|upper }}</div>
+                    <div class="fb-input-wrapper">
+                        <input type="text" name="text" placeholder="Écrire un commentaire..." required>
+                        <button type="submit">➤</button>
+                    </div>
+                </form>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<script>
+function toggleComments(postId) {
+    var section = document.getElementById('comment-section-' + postId);
+    section.style.display = (section.style.display === "none") ? "block" : "none";
+}
+</script>
+{% endblock %}

@@ -1,0 +1,27 @@
+{% extends 'portal/base.html' %}
+
+{% block content %}
+<div class="card" style="max-width: 500px; margin: auto;">
+    <h2>Upload New Schedule</h2>
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        
+        <label>Department:</label><br>
+        <select name="department" required style="width: 100%; padding: 8px; margin: 10px 0;">
+            {% for dept in departments %}
+                <option value="{{ dept.id }}">{{ dept.name }}</option>
+            {% endfor %}
+        </select>
+
+        <label>Promotion (ex: G1, L2):</label><br>
+        <input type="text" name="promotion" required style="width: 100%; padding: 8px; margin: 10px 0;">
+
+        <label>PDF File:</label><br>
+        <input type="file" name="file" accept=".pdf" required style="margin: 10px 0;">
+
+        <button type="submit" style="background: #004a99; color: white; padding: 10px; border: none; width: 100%; cursor: pointer;">
+            Publish Schedule
+        </button>
+    </form>
+</div>
+{% endblock %}

@@ -1,0 +1,54 @@
+{% extends 'portal/base.html' %}
+
+{% block title %}Créer compte{% endblock %}
+{% block content %}
+<div class="post-card" style="max-width: 400px; margin: 50px auto; padding: 30px; border-top: 4px solid var(--blue);">
+    <h2 style="text-align: center; color: var(--blue); margin-bottom: 20px;">Inscription Étudiant</h2>
+    
+    <form method="POST">
+        {% csrf_token %}
+        
+        {% if form.errors %}
+            <div style="color: var(--red); background: #fee; padding: 10px; border-radius: 5px; margin-bottom: 15px; font-size: 0.85rem;">
+                {{ form.non_field_errors }}
+                {% for field in form %}{{ field.errors }}{% endfor %}
+            </div>
+        {% endif %}
+
+        <div class="custom-form-group">
+            <label>Votre Nom :</label>
+            {{ form.username }}
+        </div>
+
+        <div class="custom-form-group">
+            <label>Mot de passe :</label>
+            {{ form.password }}
+        </div>
+
+        <div class="custom-form-group">
+            <label>Confirmation :</label>
+            {{ form.confirm_password }}
+        </div>
+
+        <button type="submit" class="btn-primary" style="width: 100%; border: none; padding: 12px; cursor: pointer; border-radius: 5px; margin-top: 15px;">
+            CRÉER MON COMPTE
+        </button>
+    </form>
+
+    <p style="text-align: center; margin-top: 20px; font-size: 0.9rem;">
+        Déjà inscrit ? <a href="{% url 'login' %}">Se connecter</a>
+    </p>
+</div>
+
+<style>
+    .custom-form-group { margin-bottom: 15px; }
+    .custom-form-group label { display: block; font-weight: 600; margin-bottom: 5px; font-size: 0.9rem; }
+    .custom-form-group input { 
+        width: 100%; 
+        padding: 10px; 
+        border: 1px solid #ccc; 
+        border-radius: 5px; 
+        box-sizing: border-box;
+    }
+</style>
+{% endblock %}

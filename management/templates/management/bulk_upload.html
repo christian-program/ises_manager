@@ -1,0 +1,58 @@
+{% extends 'portal/base.html' %}
+
+{% block content %}
+<div class="feed-container">
+    <div class="post-card" style="max-width: 600px; margin: 40px auto; padding: 30px;">
+        <h2 style="color: var(--blue); text-align: center; margin-bottom: 10px;">🚀 Importation Massive des Résultats</h2>
+        <p style="text-align: center; color: #666; font-size: 0.9rem; margin-bottom: 30px;">
+            Veuillez sélectionner la promotion et charger les fichiers correspondants.
+        </p>
+
+        {% if message %}
+            <div style="background: #d4edda; color: #155724; padding: 15px; border-radius: 5px; margin-bottom: 20px; text-align: center; font-weight: bold;">
+                {{ message }}
+            </div>
+        {% endif %}
+
+        <form action="{% url 'bulk_upload' %}" method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+
+            <div class="form-section" style="margin-bottom: 20px;">
+                <label style="display: block; font-weight: bold; margin-bottom: 8px;">1. Promotion concernée :</label>
+                <select name="promotion" required style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 5px; background: #f9f9f9; font-size: 1rem;">
+                    <option value="">-- Sélectionnez une promotion --</option>
+                    {% for promo in promotions %}
+                        <option value="{{ promo.id }}">{{ promo.department.name }} — {{ promo.name }}</option>
+                    {% endfor %}
+                </select>
+                <small style="color: #888;">Assurez-vous que les PDF dans le ZIP appartiennent à cette promotion.</small>
+            </div>
+
+            <hr style="border: 0; border-top: 1px solid #eee; margin: 25px 0;">
+
+            <div class="form-section" style="margin-bottom: 20px;">
+                <label style="display: block; font-weight: bold; margin-bottom: 8px;">2. Fichier Excel (.xlsx) :</label>
+                <input type="file" name="excel_file" accept=".xlsx, .xls" required 
+                       style="width: 100%; padding: 10px; border: 1px dashed #bbb; border-radius: 5px; background: #fff;">
+                <p style="font-size: 0.8rem; color: #666; margin-top: 5px;">Colonnes requises : <strong>nom</strong>, <strong>matricule</strong></p>
+            </div>
+
+            <div class="form-section" style="margin-bottom: 30px;">
+                <label style="display: block; font-weight: bold; margin-bottom: 8px;">3. Fichier ZIP des PDF :</label>
+                <input type="file" name="zip_file" accept=".zip" required 
+                       style="width: 100%; padding: 10px; border: 1px dashed #bbb; border-radius: 5px; background: #fff;">
+                <p style="font-size: 0.8rem; color: #666; margin-top: 5px;">Nommez chaque PDF par le matricule (ex: <strong>22-ISTP-001.pdf</strong>)</p>
+            </div>
+
+            <button type="submit" class="btn-primary" 
+                    style="width: 100%; padding: 15px; border: none; border-radius: 5px; font-weight: bold; cursor: pointer; font-size: 1.1rem;">
+                LANCER L'IMPORTATION
+            </button>
+        </form>
+
+        <div style="margin-top: 25px; text-align: center;">
+            <a href="{% url 'teacher_dashboard' %}" style="text-decoration: none; color: #666; font-size: 0.9rem;">← Retour au Dashboard</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

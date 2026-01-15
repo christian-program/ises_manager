@@ -1,0 +1,63 @@
+{% extends 'portal/base.html' %}
+
+{% block title %}Horaires{% endblock %}
+{% block content %}
+<div class="feed-container">
+    <div class="page-header-box" style="background: var(--blue); color: white; padding: 20px; border-radius: 10px; margin-bottom: 25px; text-align: center;">
+        <h1>📅 Horaires des Cours</h1>
+    </div>
+
+    {% for post in posts %}
+    <div class="post-card" style="border-left: 6px solid var(--blue);">
+        <div class="post-header-meta">
+            <div class="fb-avatar">H</div>
+            <div class="post-info">
+                <span class="post-author-name">Horaire : <strong>{{ post.promotion }}</strong></span>
+                <span class="post-date">{{ post.created_at|date:"d M Y" }}</span>
+            </div>
+        </div>
+
+        <div class="post-content">
+            <h2 class="post-title">{{ post.title }}</h2>
+            {% if post.document_pdf %}
+            <div class="schedule-download-box" style="background: #e7f3ff; border: 1px dashed var(--blue); padding: 15px; border-radius: 8px; text-align: center;">
+                <a href="{{ post.document_pdf.url }}" class="btn-pdf-download" target="_blank">📥 TÉLÉCHARGER LE PDF</a>
+            </div>
+            {% endif %}
+        </div>
+
+        <div class="fb-comments-wrapper" style="margin-top: 15px;">
+            <button type="button" class="interaction-btn" onclick="toggleComments('{{ post.id }}')" style="font-size: 0.8rem; color: var(--blue);">
+                💬 Questions sur l'horaire ? ({{ post.comments.count }})
+            </button>
+
+            <div id="comment-section-{{ post.id }}" class="fb-comments-section" style="display: none; border-top: 1px solid #eee; margin-top: 10px;">
+                <div class="fb-comments-list">
+                    {% for comment in post.comments.all %}
+                    <div class="fb-comment-item">
+                        <div class="fb-avatar mini">{{ comment.author.username|slice:":1"|upper }}</div>
+                        <div class="fb-comment-content">
+                            <div class="fb-bubble"><span class="fb-user-name">{{ comment.author.username }}</span><p class="fb-text">{{ comment.text }}</p></div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% if user.is_authenticated %}
+                <form action="{% url 'add_comment' post.id %}" method="POST" class="fb-input-area">
+                    {% csrf_token %}
+                    <div class="fb-input-wrapper"><input type="text" name="text" placeholder="Posez votre question..." required><button type="submit">➤</button></div>
+                </form>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<script>
+function toggleComments(postId) {
+    var section = document.getElementById('comment-section-' + postId);
+    section.style.display = (section.style.display === "none") ? "block" : "none";
+}
+</script>
+{% endblock %}
