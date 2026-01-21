@@ -1,8 +1,3 @@
-/* Nouveau : responsive.css
-   Complément à style.css — mobile-first, menu burger, grilles adaptatives,
-   boutons et formulaires responsive, typographie fluide.
-*/
-
 /* BREAKPOINTS (mobile-first) */
 :root {
     --max-width-sm: 640px;
@@ -204,9 +199,23 @@ body.nav-open::after {
     body.nav-open .nav-toggle .hamburger::after { opacity: 0; }
 
     /* ensure logo and whatsapp button are not cramped */
-    .logo-container { gap: 10px; align-items: center; }
-    .logo-image { width: 48px; height: auto; }
+    .logo-container { gap: 8px; align-items: center; }
+    .logo-image { width: 45px; height: auto; }
     .logo { font-size: 1.1rem; }
+    .whatsApp-btn-header {padding: 2px; margin-right: 15px;}
+    .SCHEDULE {display: block;}
+    .hero {
+    height: auto; 
+    padding: 5px;
+    background: var(--blue); 
+    color: white; display: 
+    flex; flex-direction: 
+    column; justify-content: 
+    center; align-items: 
+    center; text-align: 
+    center; border-radius: 10px; 
+    margin-bottom: 40px;
+    }
 }
 
 /* Desktop: show nav-links inline and hide nav-toggle and nav-panel */
